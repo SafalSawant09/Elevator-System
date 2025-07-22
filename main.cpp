@@ -56,7 +56,7 @@ class Elevator
         cout << "How many passengers?: ";
         cin >> req.passengerCount;
 
-        if (req.passengerCount*65 > 800)
+        if (req.passengerCount > 7)
         {
             cout << "Weight Limit Exceeded!" << endl;
             logFile << "Weight Limit Exceeded" << endl;
@@ -122,10 +122,19 @@ class Elevator
 
 int main()
 {
+    cout << "ELEVATOR SIMULATION" << endl << endl;
+    cout << "1-10 --> Move Floors" << endl;
+    cout << "11   --> Set Speed" << endl;
+    cout << ">12  --> Exit" << endl;
+    cout << "Enjoy!" << endl << endl;
+
+    sleep_for(seconds(5));
+
     Elevator E1(5, 1);
     Request r1;
 
     int cmnd;
+
     while (1)
     {
         cout << "Command? --> ";
@@ -135,7 +144,7 @@ int main()
         {
             r1.destination = cmnd;
             sleep_for(milliseconds(500));
-            system("cls");
+            // system("cls");
         
             E1.moveElevator(r1);
             sleep_for(seconds(1));
