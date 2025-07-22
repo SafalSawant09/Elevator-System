@@ -8,10 +8,11 @@ using namespace std;
 using namespace this_thread;
 using namespace chrono;
 
-void draw(int);
+void draw(int, int);
 
 struct Request
 {
+    int passengerCount;
     int destination;
 };
 
@@ -21,6 +22,7 @@ time_t currentTime = time(0);
 class Elevator
 {
     int currentFloor;
+    bool inMaintainence = false;
     
     public:
     int speed;
@@ -29,8 +31,12 @@ class Elevator
     {
         this->currentFloor = currentFloor;
         this->speed = speed;
-        initiaize();
-       
+        initiaize();      
+    }
+
+    bool isInMaintainence()
+    {
+        return inMaintainence;
     }
 
     void initiaize()
@@ -47,54 +53,69 @@ class Elevator
 
     void moveElevator(Request req)
     {   
-        if (req.destination >= 1 && req.destination <= 10)
+        cout << "How many passengers?: ";
+        cin >> req.passengerCount;
+
+        if (req.passengerCount*65 > 800)
         {
-            if (req.destination > this->currentFloor)
-            {
-                while (this->currentFloor != req.destination)
-                {
-                    for (int i = 10; i >= 1; i--)
-                    {
-                        if (i == this->currentFloor)
-                            cout << "Floor " << i << ": " << "\t" << "| E |" << endl;
-                        else
-                            cout << "Floor " << i << ": " << "\t" << "|  |" << endl;
-                    }
-                    
-                    sleep_for(seconds(1/this->speed));
-                    this->currentFloor++;
-                    system("cls");
-                }
-
-                draw(this->currentFloor);
-                logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
-            }
-            else if (req.destination < this->currentFloor)
-            {
-                while (this->currentFloor != req.destination)
-                {
-                    for (int i = 10; i >= 1; i--)
-                    {
-                        if (i == this->currentFloor)
-                            cout << "Floor " << i << ": " << "\t" << "| E |" << endl;
-                        else
-                            cout << "Floor " << i << ": " << "\t" << "|  |" << endl;
-                    }
-                    
-                    sleep_for(seconds(1/this->speed));
-                    this->currentFloor--;
-                    system("cls");
-                }
-
-                draw(this->currentFloor);
-                logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
-            }
-            else if (req.destination == this->currentFloor)
-                cout << "Already at desired floor" << endl;
-            else
-                cout << "Invalid Input" << endl;
-
+            cout << "Weight Limit Exceeded!" << endl;
+            logFile << "Weight Limit Exceeded" << endl;
+            cout << "Lift in Maintainence, due to exceeded weight limit.." << endl;
+            cout << "Wait for 5 seconds..." << endl;
+            sleep_for(seconds(5));
+            cout << "Fixed!" << endl;
         }
+        else
+        {
+            if (req.destination >= 1 && req.destination <= 10)
+            {
+                if (req.destination > this->currentFloor)
+                {
+                    while (this->currentFloor != req.destination)
+                    {
+                        for (int i = 10; i >= 1; i--)
+                        {
+                            if (i == this->currentFloor)
+                                cout << "Floor " << i << ": " << "\t" << "| " << req.passengerCount << "P" << " |" << endl;
+                            else
+                                cout << "Floor " << i << ": " << "\t" << "|   |" << endl;
+                        }
+                        
+                        sleep_for(seconds(1/this->speed));
+                        this->currentFloor++;
+                        system("cls");
+                    }
+
+                    draw(this->currentFloor, req.passengerCount);
+                    logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
+                }
+                else if (req.destination < this->currentFloor)
+                {
+                    while (this->currentFloor != req.destination)
+                    {
+                        for (int i = 10; i >= 1; i--)
+                        {
+                            if (i == this->currentFloor)
+                                cout << "Floor " << i << ": " << "\t" << "| " << req.passengerCount << "P" << " |" << endl;
+                            else
+                                cout << "Floor " << i << ": " << "\t" << "|   |" << endl;
+                        }
+                        
+                        sleep_for(seconds(1/this->speed));
+                        this->currentFloor--;
+                        system("cls");
+                    }
+
+                    draw(this->currentFloor, req.passengerCount);
+                    logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
+                }
+                else if (req.destination == this->currentFloor)
+                    cout << "Already at desired floor" << endl;
+                else
+                    cout << "Invalid Input" << endl;
+            }
+        }
+        
     }
 
 };
@@ -132,13 +153,22 @@ int main()
     return 0;
 }
 
-void draw(int floor)
+void draw(int floor, int passengers)
 {
     for (int i = 10; i >= 1; i--)
     {
         if (i == floor)
-            cout << "Floor " << i << ": " << "\t" << "| E |" << endl;
+        {
+            cout << "Floor " << i << ": " << "\t" << "| " << passengers << "P" << " |" << endl;
+            
+            sleep_for(seconds(1));
+            cout << "\x1b[1A"; 
+            cout << "\x1b[2K"; 
+            
+            cout << "\rFloor " << i << ": " << "\t" << "| E |" << endl;
+        }
         else
-            cout << "Floor " << i << ": " << "\t" << "|  |" << endl;
+            cout << "Floor " << i << ": " << "\t" << "|   |" << endl;
+
     }
 }
