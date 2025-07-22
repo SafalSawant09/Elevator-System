@@ -104,18 +104,31 @@ int main()
     Elevator E1(5, 1);
     Request r1;
 
+    int cmnd;
     while (1)
     {
-        cout << "What floor? --> ";
-        cin >> r1.destination;
-        sleep_for(milliseconds(500));
-        system("cls");
-    
-        E1.moveElevator(r1);
-        sleep_for(seconds(1));
+        cout << "Command? --> ";
+        cin >> cmnd;
+
+        if (cmnd >= 1 && cmnd <= 10)
+        {
+            r1.destination = cmnd;
+            sleep_for(milliseconds(500));
+            system("cls");
+        
+            E1.moveElevator(r1);
+            sleep_for(seconds(1));
+        }
+        else if (cmnd == 11)
+        {
+            cout << "What should the speed be: ";
+            cin >> E1.speed;
+            cout << "Speed set!" << endl;
+        }
+        else
+            exit(0);
     }
     
-
     return 0;
 }
 
