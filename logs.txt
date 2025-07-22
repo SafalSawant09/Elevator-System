@@ -1,0 +1,6 @@
+[Tue Jul 22 14:55:22 2025
+] --> Initialized at floor 5
+[Tue Jul 22 14:55:22 2025
+] --> Moved to: 2
+[Tue Jul 22 14:55:22 2025
+] --> Moved to: 10

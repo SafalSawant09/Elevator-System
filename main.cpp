@@ -2,6 +2,7 @@
 #include <thread>
 #include <chrono>
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 using namespace this_thread;
@@ -13,6 +14,9 @@ struct Request
 {
     int destination;
 };
+
+ofstream logFile("logs.txt"); 
+time_t currentTime = time(0); 
 
 class Elevator
 {
@@ -26,6 +30,7 @@ class Elevator
         this->currentFloor = currentFloor;
         this->speed = speed;
         initiaize();
+       
     }
 
     void initiaize()
@@ -37,6 +42,7 @@ class Elevator
             else
                 cout << "Floor " << i << ": " << "\t" << "|  |" << endl;
         }
+        logFile << "[" << ctime(&currentTime) << "]" << " --> " << "Initialized at floor " << this->currentFloor << endl;
     }
 
     void moveElevator(Request req)
@@ -61,6 +67,7 @@ class Elevator
                 }
 
                 draw(this->currentFloor);
+                logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
             }
             else if (req.destination < this->currentFloor)
             {
@@ -80,6 +87,7 @@ class Elevator
                 }
 
                 draw(this->currentFloor);
+                logFile << "[" << ctime(&currentTime) << "]" << " --> "  << "Moved to: " << this->currentFloor << endl;
             }
             else if (req.destination == this->currentFloor)
                 cout << "Already at desired floor" << endl;
